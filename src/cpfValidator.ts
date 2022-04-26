@@ -1,47 +1,42 @@
-//@ts-nocheck
+import ICpfValidator from './ICpfValidator'
 
-const DIVIDER_SUM_DIGITS = 11
-const QUANTITY_NUMBERS_SUM_FIRST_DIGIT = 11
-const QUANTITY_NUMBERS_SUM_SECOND_DIGIT = 12
-
-const formatCpfToArray = (cpf: string) => {
-    return cpf.replace('.','').replace('.','').replace('-','').replace(" ","").split("")  
-}
-const isCpfFormatValid = (cpf) => {
-    return  cpf !== null && (cpf.length >= 11 && cpf.length <= 14) && !formatCpfToArray(cpf).every(c => c === cpf[0])
-}
-export function cpfValidator (cpfToBeValidated) {
-    if (cpfToBeValidated !== undefined) {
-        if (isCpfFormatValid(cpfToBeValidated)) {
-            const cpfFormatted = formatCpfToArray(cpfToBeValidated)
-            try{  
-                let sumOfFirstDigit = 0, sumOfSecondDigit = 0
-                let firstCheckDigit = 0, secondCheckDigit = 0, quotient = 0  
-                let cpfDigit, checkDigitsResult  
-                    
-                for (let cpfDigitPosition = 1; cpfDigitPosition < cpfFormatted.length -1; cpfDigitPosition++) {  
-                    cpfDigit = parseInt(cpfFormatted[cpfDigitPosition -1]);  							
-                    sumOfFirstDigit = sumOfFirstDigit + ( QUANTITY_NUMBERS_SUM_FIRST_DIGIT - cpfDigitPosition ) * cpfDigit
+export default class CpfValidator implements ICpfValidator {
+    DIVIDER_SUM_DIGITS = 11
+    ARRAY_NUMBERS_SUM_FIRST_DIGIT = [10, 9, 8, 7, 6, 5, 4, 3, 2]
+    ARRAY_NUMBERS_SUM_SECOND_DIGIT = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]
     
-                    sumOfSecondDigit = sumOfSecondDigit + ( QUANTITY_NUMBERS_SUM_SECOND_DIGIT - cpfDigitPosition ) * cpfDigit
-                }
-                    
-                quotient = (sumOfFirstDigit % DIVIDER_SUM_DIGITS) 
-                firstCheckDigit = (quotient < 2) ?  0 : DIVIDER_SUM_DIGITS - quotient  
-                
-                sumOfSecondDigit += 2 * firstCheckDigit  
-                quotient = (sumOfSecondDigit % DIVIDER_SUM_DIGITS) 
-                secondCheckDigit = quotient < 2 ? 0 : DIVIDER_SUM_DIGITS - quotient 
-                
-                let checkDigits = cpfToBeValidated.substring(cpfToBeValidated.length-2, cpfToBeValidated.length) 
-                checkDigitsResult = "" + firstCheckDigit + "" + secondCheckDigit 
-                return checkDigits == checkDigitsResult
-            }catch (e){  
-                console.error("Erro !"+e)  
+    constructor(){}
 
-                return false
-            }  
-        } else return false
+    private formatCpfToArray (cpfToBeValidated: string) {
+        return cpfToBeValidated.replace('.','').replace('.','').replace('-','').replace(" ","").split("")  
+    }
+    
+    private areAllDigitsTheSame (cpfToBeValidated: string) {
+        return this.formatCpfToArray(cpfToBeValidated).every(c => c === cpfToBeValidated[0])
+    }
+    private isCorrectNumberOfDigits (cpfToBeValidated: string) {
+       return cpfToBeValidated.length >= 11 && cpfToBeValidated.length <= 14
+    }
+    
+    private calculateSumOfCpfDigits (arrayOfNumbers: Array<number>, cpfToBeValidate: Array<string>) {
+        return  arrayOfNumbers.map((number, index) => number * parseInt(cpfToBeValidate[index])).reduce((accumulator, currentNumber) => accumulator + currentNumber)
     }
 
+    isValid(cpfToBeValidated: string){ 
+        if(cpfToBeValidated === undefined) throw new Error("ERROR! CPF is undefined")
+        if(cpfToBeValidated === null) throw new Error("ERROR! CPF is null")
+        if(!this.isCorrectNumberOfDigits(cpfToBeValidated)) throw new Error("ERROR! CPF is the wrong size ")
+        if(this.areAllDigitsTheSame(cpfToBeValidated)) throw new Error("ERROR! All the digits of the cpf are the same")
+        const cpfFormatted = this.formatCpfToArray(cpfToBeValidated)
+        let quotient = 0     
+        const sumOfFirstDigit = this.calculateSumOfCpfDigits(this.ARRAY_NUMBERS_SUM_FIRST_DIGIT, cpfFormatted)
+        const sumOfSecondDigit = this.calculateSumOfCpfDigits(this.ARRAY_NUMBERS_SUM_SECOND_DIGIT, cpfFormatted)
+        quotient = (sumOfFirstDigit % this.DIVIDER_SUM_DIGITS) 
+        const firstCheckDigit = (quotient < 2) ?  0 : this.DIVIDER_SUM_DIGITS - quotient  
+        quotient = (sumOfSecondDigit % this.DIVIDER_SUM_DIGITS) 
+        const secondCheckDigit = quotient < 2 ? 0 : this.DIVIDER_SUM_DIGITS - quotient 
+        const checkDigits = cpfToBeValidated.substring(cpfToBeValidated.length-2, cpfToBeValidated.length) 
+        const checkDigitsResult = "" + firstCheckDigit + "" + secondCheckDigit 
+        return checkDigits == checkDigitsResult
+    }
 }
