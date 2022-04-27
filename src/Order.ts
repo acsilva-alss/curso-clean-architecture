@@ -1,29 +1,31 @@
-import ICpfValidator from "./ICpfValidator"
-import Product from "./Product"
+import Cpf from "./Cpf"
+import Item from "./Item"
+import OrderItem from "./OrderItem"
 
 export default class Order {
-    items: Product[]
-    totalPrice: number
-    discount: number
-    cpf: string
-    constructor(readonly cpfValidator: ICpfValidator){
-        this.items = []
-        this.cpf = ''
-        this.totalPrice = 0
-        this.discount = 0
+    orderItems: OrderItem[]
+    cpf: Cpf
+    constructor(userCpf: string){
+        this.cpf = new Cpf(userCpf)
+        this.orderItems= []
+        
     }
 
-    addItem (description: string, price: number, quantity: number){
-        this.items.push(new Product(description, price, quantity))
-        this.totalPrice += price
+    addItem (item: Item, quantity: number){
+        const newOrderItem = new OrderItem(item.id, item.price, quantity)
+        this.orderItems.push(newOrderItem)
     }
 
-    finishOrder (userCpf: string, percentDiscount?: number){
-        if(!this.cpfValidator.isValid(userCpf)) throw new Error("ERROR! cpf is invalid")
-        if(percentDiscount){
-            this.totalPrice -= this.totalPrice * percentDiscount
-        }
-        return this.items
+    getTotalOrder (){
+        const totalOrder = this.orderItems.reduce((totalAccumulator, currentItem) => {
+            totalAccumulator += currentItem.getTotal()
+            return totalAccumulator
+        },0)
+
+        // if(percentDiscount){
+        //     this.totalPrice -= this.totalPrice * percentDiscount
+        // }
+        return totalOrder
     
     }
 }
