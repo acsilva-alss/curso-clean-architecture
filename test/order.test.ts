@@ -1,3 +1,4 @@
+import Coupon from "../src/Coupon"
 import Cpf from "../src/Cpf"
 import CpfValidator from "../src/Cpf"
 import Item from "../src/Item"
@@ -6,14 +7,11 @@ import OrderItem from "../src/OrderItem"
 
 let order: Order
 
-// beforeEach(() =>{
-//     const cpfValidator = new CpfValidator()
-//     order = new Order(cpfValidator)
-// })
+const fakeValidCpf = '46697564350'
+const fakeInvalidCpf = '85043122151'
 
 test("Should not create an order with an invalid cpf", () => {
-    const invalidCpf = '85043122151'
-    expect(() => new Order(invalidCpf)).toThrow(new Error("ERROR! Invalid CPF"))
+    expect(() => new Order(fakeInvalidCpf)).toThrow(new Error("ERROR! Invalid CPF"))
 })
 
 test("Should create an order with 3 itens", () => {
@@ -21,7 +19,7 @@ test("Should create an order with 3 itens", () => {
     const newItem2 = new Item(0, 'Produto 1', 10)
     const newItem3 = new Item(0, 'Produto 1', 10)
     
-    const newOrder = new Order('02695041098')
+    const newOrder = new Order(fakeValidCpf)
     newOrder.addItem(newItem1, 2)
     newOrder.addItem(newItem2, 1)
     newOrder.addItem(newItem3, 1)
@@ -30,10 +28,11 @@ test("Should create an order with 3 itens", () => {
     expect(totalOrder).toBe(60)
 })
 
-// test("Should create an order with discount", () => {
-//     const invalidCpf = '02695041098'
-//     order.addItem('Produto 1', 20.00, 1)
-//     const percentDiscount = 0.2
-//     order.finishOrder(invalidCpf, percentDiscount)
-//     expect(20.00 - (20.00 * 0.2)).toBe(order.totalPrice)
-// })
+test("Should create an order with discount", () => {
+    const newItem1 = new Item(0, 'Produto 1', 20)
+    const newOrder = new Order(fakeValidCpf)
+    newOrder.addItem(newItem1, 1)
+    const newCoupon = new Coupon('PROMOCAO', 20)
+    newOrder.addCoupon(newCoupon)
+    expect(newOrder.getTotalOrder()).toBe(newItem1.price - newCoupon.calculateDiscount(newItem1.price))
+})

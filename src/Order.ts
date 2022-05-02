@@ -1,3 +1,4 @@
+import Coupon from "./Coupon"
 import Cpf from "./Cpf"
 import Item from "./Item"
 import OrderItem from "./OrderItem"
@@ -5,6 +6,7 @@ import OrderItem from "./OrderItem"
 export default class Order {
     orderItems: OrderItem[]
     cpf: Cpf
+    coupon?: Coupon
     constructor(userCpf: string){
         this.cpf = new Cpf(userCpf)
         this.orderItems= []
@@ -15,16 +17,19 @@ export default class Order {
         const newOrderItem = new OrderItem(item.id, item.price, quantity)
         this.orderItems.push(newOrderItem)
     }
+    addCoupon (coupon: Coupon){
+        this.coupon = coupon
+    }
 
     getTotalOrder (){
-        const totalOrder = this.orderItems.reduce((totalAccumulator, currentItem) => {
+        let totalOrder = this.orderItems.reduce((totalAccumulator, currentItem) => {
             totalAccumulator += currentItem.getTotal()
             return totalAccumulator
         },0)
 
-        // if(percentDiscount){
-        //     this.totalPrice -= this.totalPrice * percentDiscount
-        // }
+        if(this.coupon){
+            totalOrder -= this.coupon.calculateDiscount(totalOrder)
+        }
         return totalOrder
     
     }

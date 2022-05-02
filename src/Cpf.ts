@@ -23,8 +23,6 @@ export default class Cpf {
     private calculateCheckDigit (cpf: string, factor: number) {
         const sumTotal = [...cpf].reduce((totalAccumulator, currentDigit) => {
             if(factor > 1) totalAccumulator += parseInt(currentDigit) * factor--
-            console.log(currentDigit)
-            console.log(totalAccumulator)
             return totalAccumulator
         }, 0)
         
