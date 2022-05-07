@@ -36,3 +36,13 @@ test("Should create an order with discount", () => {
     newOrder.addCoupon(newCoupon)
     expect(newOrder.getTotalOrder()).toBe(newItem1.price - newCoupon.calculateDiscount(newItem1.price))
 })
+
+test("Should create an order with expired coupon", () => {
+    const order = new Order('935.411.347-80')
+    order.addItem(new Item(1, "Guitarra", 1000), 1)
+    order.addItem(new Item(2, "Amplificador", 5000), 1)
+    order.addItem(new Item(3, "Cabo", 30), 3)
+    order.addCoupon(new Coupon('VALE20', 20, new Date('2021-03-01T10:00:00')))
+    const total = order.getTotalOrder()
+    expect(total).toBe(6090)
+})
