@@ -38,7 +38,7 @@ test("Should create an order with discount", () => {
 })
 
 test("Should create an order with expired coupon", () => {
-    const order = new Order('935.411.347-80')
+    const order = new Order('935.411.347-80', new Date('2021-03-10T10:00:00'))
     order.addItem(new Item(1, "Guitarra", 1000), 1)
     order.addItem(new Item(2, "Amplificador", 5000), 1)
     order.addItem(new Item(3, "Cabo", 30), 3)
