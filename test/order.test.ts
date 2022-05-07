@@ -1,11 +1,12 @@
 import Coupon from "../src/Coupon"
 import Cpf from "../src/Cpf"
 import CpfValidator from "../src/Cpf"
+import Dimension from "../src/Dimension"
 import Item from "../src/Item"
 import Order from "../src/Order"
 import OrderItem from "../src/OrderItem"
 
-let order: Order
+// let order: Order
 
 const fakeValidCpf = '46697564350'
 const fakeInvalidCpf = '85043122151'
@@ -45,4 +46,14 @@ test("Should create an order with expired coupon", () => {
     order.addCoupon(new Coupon('VALE20', 20, new Date('2021-03-01T10:00:00')))
     const total = order.getTotalOrder()
     expect(total).toBe(6090)
+})
+
+test("Should create an order with 3 items and calculate freight", () => {
+    const order = new Order('935.411.347-80')
+    order.addItem(new Item(1, "Guitarra", 1000, 3, new Dimension(100, 30, 10)), 1)
+    order.addItem(new Item(2, "Amplificador", 5000, 20, new Dimension(50, 50, 50)), 1)
+    order.addItem(new Item(3, "Cabo", 30, 1, new Dimension(10, 10, 10)), 3)
+    const freight = order.getFreight()
+    const total = order.getTotalOrder()
+    expect(total).toBe(6350)
 })
