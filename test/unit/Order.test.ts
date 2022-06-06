@@ -1,12 +1,7 @@
-import Coupon from "../src/Coupon"
-import Cpf from "../src/Cpf"
-import CpfValidator from "../src/Cpf"
-import Dimension from "../src/Dimension"
-import Item from "../src/Item"
-import Order from "../src/Order"
-import OrderItem from "../src/OrderItem"
-
-// let order: Order
+import Coupon from "../../src/domain/entity/Coupon"
+import Dimension from "../../src/domain/entity/Dimension"
+import Item from "../../src/domain/entity/Item"
+import Order from "../../src/domain/entity/Order"
 
 const fakeValidCpf = '46697564350'
 const fakeInvalidCpf = '85043122151'

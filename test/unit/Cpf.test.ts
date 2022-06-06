@@ -1,4 +1,4 @@
-import Cpf from "../src/Cpf"
+import Cpf from "../../src/domain/entity/Cpf"
 
 const wrongSizeCpf = [
     '026 950 410 985',
