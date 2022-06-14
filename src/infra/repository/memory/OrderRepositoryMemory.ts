@@ -6,6 +6,9 @@ export default class OrderRepositoryMemory implements OrderRepository {
     constructor(){
         this.orders = []
     }
+    async count(): Promise<number> {
+        return this.orders.length
+    }
     async save(order: Order): Promise<void> {
         this.orders.push(order)
     }

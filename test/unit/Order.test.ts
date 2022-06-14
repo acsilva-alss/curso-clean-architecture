@@ -50,5 +50,14 @@ test("Should create an order with 3 items and calculate freight", () => {
     order.addItem(new Item(3, "Cabo", 30, 1, new Dimension(10, 10, 10)), 3)
     const freight = order.getFreight()
     const total = order.getTotalOrder()
+    expect(freight).toBe(260);
     expect(total).toBe(6350)
 })
+
+test("Should create an order with 3 items and and generate a code  AAAAPPPPPPPP", () => {
+    const date = new Date('2021-03-10T10:00:00')
+    const order = new Order('935.411.347-80', date)
+    
+    expect(order.orderCode.value).toBe('202100000001')
+})
+
