@@ -25,12 +25,16 @@ test("Should create an order with 3 itens", () => {
 })
 
 test("Should create an order with discount", () => {
-    const newItem1 = new Item(0, 'Produto 1', 20)
+    const newItem1 = new Item(0, 'Guitarra', 1000)
+    const newItem2 = new Item(0, 'Amplificador', 5000)
+    const newItem3 = new Item(0, 'Cabo', 30)
     const newOrder = new Order(fakeValidCpf)
     newOrder.addItem(newItem1, 1)
+    newOrder.addItem(newItem2, 1)
+    newOrder.addItem(newItem3, 3)
     const newCoupon = new Coupon('PROMOCAO', 20)
     newOrder.addCoupon(newCoupon)
-    expect(newOrder.getTotalOrder()).toBe(newItem1.price - newCoupon.calculateDiscount(newItem1.price))
+    expect(newOrder.getTotalOrder()).toBe(4872)
 })
 
 test("Should create an order with expired coupon", () => {
