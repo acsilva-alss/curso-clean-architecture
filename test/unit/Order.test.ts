@@ -12,8 +12,8 @@ test("Should not create an order with an invalid cpf", () => {
 
 test("Should create an order with 3 itens", () => {
     const newItem1 = new Item(0, 'Produto 1', 20)
-    const newItem2 = new Item(0, 'Produto 1', 10)
-    const newItem3 = new Item(0, 'Produto 1', 10)
+    const newItem2 = new Item(1, 'Produto 1', 10)
+    const newItem3 = new Item(2, 'Produto 1', 10)
     
     const newOrder = new Order(fakeValidCpf)
     newOrder.addItem(newItem1, 2)
@@ -26,8 +26,8 @@ test("Should create an order with 3 itens", () => {
 
 test("Should create an order with discount", () => {
     const newItem1 = new Item(0, 'Guitarra', 1000)
-    const newItem2 = new Item(0, 'Amplificador', 5000)
-    const newItem3 = new Item(0, 'Cabo', 30)
+    const newItem2 = new Item(1, 'Amplificador', 5000)
+    const newItem3 = new Item(2, 'Cabo', 30)
     const newOrder = new Order(fakeValidCpf)
     newOrder.addItem(newItem1, 1)
     newOrder.addItem(newItem2, 1)
@@ -65,3 +65,9 @@ test("Should create an order with 3 items and and generate a code  AAAAPPPPPPPP"
     expect(order.orderCode.value).toBe('202100000001')
 })
 
+test("Should return error if item is added more than once", () => {
+    const newItem1 = new Item(0, 'Produto 1', 20)
+    const newOrder = new Order(fakeValidCpf)
+    newOrder.addItem(newItem1, 2)
+    expect(() => newOrder.addItem(newItem1, 2)).toThrow(new Error('Duplicated item'))
+})

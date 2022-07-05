@@ -1,7 +1,9 @@
 import Dimension from "./Dimension"
 
 export default class Item {
-    constructor( readonly id: number, readonly description: string, readonly price: number, readonly weight?: number, readonly dimension?: Dimension){}
+    constructor( readonly id: number, readonly description: string, readonly price: number, readonly weight?: number, readonly dimension?: Dimension){
+        if(weight && weight < 0) throw new Error('Invalid weight')
+    }
 
     getVolume() {
         if(this.dimension){

@@ -1,7 +1,7 @@
 import Item from "./Item";
 
 export default class Freight {
-    private totalFreight = 0
+    totalFreight = 0
     private DISTANCE = 1000
     private FACTOR = 100
 

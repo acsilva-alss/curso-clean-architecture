@@ -23,3 +23,7 @@ test('Density should be zero if item not weight', () => {
     const item = new Item(1, 'Guitarra', 1000)
     expect(item.getDensity()).toBe(0)
 })
+
+test('Should return error if weight is less than zero', () => {
+    expect(() => new Item(1, 'Guitarra', 1000, -1)).toThrow(new Error('Invalid weight'))
+})

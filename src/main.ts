@@ -5,18 +5,16 @@ import GetItems from './application/GetItems'
 import Item from './domain/entity/Item'
 import ItemRepositoryDatabase from './infra/repository/database/ItemRepositoryDatabase'
 import ItemRepositoryMemory from './infra/repository/memory/ItemRepositoryMemory'
-import PgProimiseConnectionAdapter from './infra/database/PgProimiseConnectionAdapter'
+import PgPromiseConnectionAdapter from './infra/database/PgPromiseConnectionAdapter'
+import ItemController from './infra/controller/ItemController'
+import OrderController from './infra/controller/OrderController'
+import OrderRepositoryDatabase from './infra/repository/database/OrderRepositoryDatabase'
 
 const http = new ExpressAdapter()
 
-const connection = new PgProimiseConnectionAdapter()
+const connection = new PgPromiseConnectionAdapter()
 const itemRepository = new ItemRepositoryDatabase(connection)
-
-http.on('get', '/items', async (params: any, body: any)=> {
-    const getItems = new GetItems(itemRepository)
-    const output = await getItems.execute()
-    return output
-
-})
-
+new ItemController(http, itemRepository)
+const orderRepository = new OrderRepositoryDatabase(connection)
+new OrderController(http, orderRepository)
 http.listen(3000)
