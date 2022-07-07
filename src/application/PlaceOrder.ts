@@ -2,9 +2,18 @@ import ItemRepository from "../domain/repository/ItemRepository"
 import Order from "../domain/entity/Order"
 import OrderRepository from "../domain/repository/OrderRepository"
 import CouponRepository from "../domain/repository/CouponRepository"
+import RepositoryFactory from "../domain/factory/RepositoryFactory"
 
 export default class PlaceOrder {
-    constructor (readonly itemRepository: ItemRepository, readonly orderRepository: OrderRepository, readonly couponRepository: CouponRepository){}
+    itemRepository: ItemRepository
+    orderRepository: OrderRepository
+    couponRepository: CouponRepository
+    
+    constructor (readonly repositoryFactory: RepositoryFactory){
+        this.itemRepository = repositoryFactory.createItemRepository()
+        this.orderRepository = repositoryFactory.createOrderRepository()
+        this.couponRepository = repositoryFactory.createCouponRepository()
+    }
 
     async execute (input: Input): Promise<Output> {
         const sequence = await this.orderRepository.count() + 1
@@ -17,6 +26,7 @@ export default class PlaceOrder {
             const coupon = await this.couponRepository.getByCode(input.coupon)
             order.addCoupon(coupon)
         }
+
         await this.orderRepository.save(order)
         const total = order.getTotalOrder()
 

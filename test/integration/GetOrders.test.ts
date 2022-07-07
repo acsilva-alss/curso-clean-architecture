@@ -3,19 +3,23 @@ import PlaceOrder from "../../src/application/PlaceOrder"
 import Coupon from "../../src/domain/entity/Coupon"
 import Dimension from "../../src/domain/entity/Dimension"
 import Item from "../../src/domain/entity/Item"
+import RepositoryFactory from "../../src/domain/factory/RepositoryFactory"
 import OrderRepository from "../../src/domain/repository/OrderRepository"
 import Connection from "../../src/infra/database/Connection"
 import PgPromiseConnectionAdapter from "../../src/infra/database/PgPromiseConnectionAdapter"
+import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory"
 import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRepositoryDatabase"
 import CouponRepositoryMemory from "../../src/infra/repository/memory/CouponRepositoryMemory"
 import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemRepositoryMemory"
 
 let connection: Connection
 let orderRepository: OrderRepository
+let repositoryFactory: RepositoryFactory
 
 beforeEach(async () => {
     connection = new PgPromiseConnectionAdapter()
-    orderRepository = new OrderRepositoryDatabase(connection)
+    repositoryFactory = new DatabaseRepositoryFactory(connection)
+    orderRepository = repositoryFactory.createOrderRepository()
     await orderRepository.clear()
 })
 
@@ -32,7 +36,7 @@ test('Should return list of orders', async () => {
     itemRepository.save(new Item(3, "Cabo", 30, 1, new Dimension(10, 10, 10)))
     const couponRepository = new CouponRepositoryMemory()
     await couponRepository.save(new Coupon('VALE20', 20, new Date('2021-03-10T10:00:00')))
-    const placeOrder = new PlaceOrder(itemRepository, orderRepository, couponRepository)
+    const placeOrder = new PlaceOrder(repositoryFactory)
     const input = {
         cpf: '026.950.410.98',
         orderItems: [

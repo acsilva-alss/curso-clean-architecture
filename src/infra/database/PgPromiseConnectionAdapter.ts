@@ -5,7 +5,7 @@ export default class PgPromiseConnectionAdapter implements Connection {
     pgp: any
 
     constructor () {
-        this.pgp = pgp()('postgres://postgres:admin@localhost:5432/curso-clean-arq')
+        this.pgp = pgp()('postgres://postgres:admin@localhost:5432/curso-clean-architecture')
     }
     query(statement: string, params: any): Promise<any> {
        return this.pgp.query(statement, params)
