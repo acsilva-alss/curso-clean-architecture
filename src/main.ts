@@ -21,7 +21,7 @@ const itemRepository = new ItemRepositoryDatabase(connection)
 const orderRepository = new OrderRepositoryDatabase(connection)
 const repositoryFactory = new DatabaseRepositoryFactory(connection)
 new ItemController(http, itemRepository)
-new OrderController(http, orderRepository)
+new OrderController(http, orderRepository, repositoryFactory)
 new StockController(queue, repositoryFactory)
 
 http.listen(3000)
